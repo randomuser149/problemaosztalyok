@@ -1,5 +1,9 @@
 S -> A | B 
 asdasd
+A -> HHHHG
+HHH -> XYZ
+HG -> D
+D -> X
 C -> X | Y
 X -> L | T
 L -> Xs | sd | yd
