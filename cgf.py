@@ -81,8 +81,8 @@ def compute_reachable_nonterminals(grammar, splitter, start_symbol):
         print(f" current not in set, adding: {current}")
         reachable_nonterminals_set.add(current) # mark current nonterminal as reachable (adding to set)
         print(f" current reachable set is: {reachable_nonterminals_set}")
-        for expansion in grammar.values(): # iterate over each value for a given key NEEDS FIXING, THIS FETCHES ALL VALUES
-            print(f" current values are: {grammar.values()}")
+        for expansion in grammar.get(current): # iterate over each value for a given key
+            print(f" current values are: {expansion}")
 
     return reachable_nonterminals_set
 
