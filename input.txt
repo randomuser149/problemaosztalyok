@@ -1,3 +1,7 @@
 S -> A | B | C
 asdasd
-C -> VX
+CC -> VX
+VX -> ASD
+DH -> asd
+F -> Gx
+Gx -> y

@@ -18,4 +18,34 @@ def parse_rules(filename):
                 grammar.setdefault(left_hand_side, []).append(rule) # append values to or create the new key + values
     return dict(grammar), nonterminals
 
-parse_rules("input.txt")
+def make_splitter(nonterminals):
+    nonterminal_length = sorted({len(i) for i in nonterminals}, reverse=True) # collects nonterminal lenghts, no repeats, in reversed order 
+    def splitter(input_string):
+        print(f" nonterminals: {nonterminals}")
+        print(f" nonterminal lengths, no repeats, in reversed order: {nonterminal_length}")
+        index = 0
+        token_list = [] # stores found tokens in a list
+        while index < len(input_string):
+            matched = False # track whether a nonterminal was matched at this index
+            for length in nonterminal_length: # checks every length starting from given index
+                print(f" current length: {length}")
+                if index + length <= len(input_string): # checks against out of bounds
+                    substring = input_string[index:index+length]
+                    print(f" if loop current: {input_string[index:index+length]}")
+                    if substring in nonterminals: # if the current substring is found in nonterminals 
+                        token_list.append(substring) # append the substring to the token_list
+                        print(f" found match, adding: {substring}")
+                        index = index+length # correct the index to skip the length of found substring
+                        matched = True # the if not matched doesn't run
+                        break
+            if not matched: # if no match found
+                print(f" did not find match, adding: {input_string[index]}")
+                token_list.append(input_string[index]) # append only the char to the token_list
+                index += 1 # increase index by 1
+        return token_list
+    return splitter
+
+
+grammar, nonterminals = parse_rules("input.txt")
+splitter = make_splitter(nonterminals)
+print(f" output tokens: {splitter("SDFGxDHVX")}")
