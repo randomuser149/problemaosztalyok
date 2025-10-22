@@ -45,30 +45,49 @@ def make_splitter(nonterminals):
         return token_list
     return splitter
 
-def compute_productive_set(grammar, splitter):
+def compute_productive_nonterminals(grammar, splitter):
     productive_nonterminals = set() # (set) stores productive nonterminals
     matched = True # tracks whether a productive nonterminal was found in that iteration, set to True ensures the while runs at least once
     while matched: # keep looping until no new productive nonterminals are discovered
         matched = False
         for nonterminal, expansions in grammar.items(): # unpacking each rule into nonterminal and its expansions (list), iterate over each nonterminal
-            print(f"\n nonterminal is {nonterminal} | expansions are {expansions}")
+            #print(f"\n nonterminal is {nonterminal} | expansions are {expansions}")
             if nonterminal in productive_nonterminals: # if already found, skip to next iteration
-                print(f" nonterminal already in productive set {nonterminal}")
+                #print(f" nonterminal already in productive set {nonterminal}")
                 continue
             for expansion in expansions: # for each expansion to given nonterminal
-                print(f" current expansion is: {expansion} | full expansion list for nonterminal is {expansions}")
+                #print(f" current expansion is: {expansion} | full expansion list for nonterminal is {expansions}")
                 if all((token.islower() or (token in productive_nonterminals)) for token in splitter(expansion)): # if all tokens are lowercase (terminal) or are known productive nonterminals
-                    [print(f"\t token is productive: {token}") for token in splitter(expansion)]
-                    print(f" all tokens in expansion are productive {splitter(expansion)}\n appending {nonterminal} to set")
+                    #[print(f"\t token is productive: {token}") for token in splitter(expansion)]
+                    #print(f" all tokens in expansion are productive {splitter(expansion)}\n appending {nonterminal} to set")
                     productive_nonterminals.add(nonterminal) # add to the set
                     matched = True # ensures the loop runs once more
                     break # exits if one productive expansion is found
-                else:
-                    for token in splitter(expansion):
-                        print(f"\t token is productive: {token}") if (token.islower() or token in productive_nonterminals) else print(f"\t token is not productive: {token}")
+                #else:
+                #    for token in splitter(expansion):
+                #        print(f"\t token is productive: {token}") if (token.islower() or token in productive_nonterminals) else print(f"\t token is not productive: {token}")
     return productive_nonterminals
+
+def compute_reachable_nonterminals(grammar, splitter, start_symbol):
+    reachable_nonterminals_set = set() # (set) stores reachable nonterminals
+    stack = [start_symbol] if start_symbol in grammar else [] # (stack) stores to be checked items, starts with start_symbol if it has a rule [LIFO]
+    print(f" current stack is: {stack}")
+    while stack: # until stack is empty
+        current = stack.pop() # remove last added item, store in current for computing it
+        print(f" current item: {current}")
+        if current in reachable_nonterminals_set:
+            print(f" current already in set: {current}")
+            continue
+        print(f" current not in set, adding: {current}")
+        reachable_nonterminals_set.add(current) # mark current nonterminal as reachable (adding to set)
+        print(f" current reachable set is: {reachable_nonterminals_set}")
+        for expansion in grammar.values(): # iterate over each value for a given key NEEDS FIXING, THIS FETCHES ALL VALUES
+            print(f" current values are: {grammar.values()}")
+
+    return reachable_nonterminals_set
 
 grammar, nonterminals = parse_rules("input.txt")
 splitter = make_splitter(nonterminals)
 print(f" output tokens: {splitter("SDFGxDHVX")}")
-print(f" productive sets: {compute_productive_set(grammar,splitter)}")
+print(f" productive set: {compute_productive_nonterminals(grammar,splitter)}")
+print(f" reachable set: {compute_reachable_nonterminals(grammar,splitter,"S")}")
