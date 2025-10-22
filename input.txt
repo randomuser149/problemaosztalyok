@@ -2,4 +2,4 @@ S -> A | B
 asdasd
 C -> X | Y
 X -> L | T
-L -> s
+L -> Xs | sd | yd
