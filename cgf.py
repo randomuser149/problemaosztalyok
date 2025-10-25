@@ -15,7 +15,7 @@ def parse_rules(filename):
             left_hand_side = left_hand_side.strip()
             nonterminals.add(left_hand_side) # collect nonterminals from the left hand side
             for rule in [item.strip() for item in right_hand_side.split("|")]: # for each option to given lhs
-                if rule == "":
+                if rule == "": # skip if line has rule, but rule is empty.
                     continue
                 grammar.setdefault(left_hand_side, []).append(rule) # append values to or create the new key + values
     return dict(grammar), nonterminals
