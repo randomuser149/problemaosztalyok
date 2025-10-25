@@ -1,2 +1,4 @@
-S -> HG
-HG -> a
+S -> ABcDE
+AB -> a
+DE -> dE | e
+E -> f
