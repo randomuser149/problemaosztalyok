@@ -71,34 +71,36 @@ def compute_productive_nonterminals(grammar, splitter):
 def compute_reachable_nonterminals(grammar, splitter, start_symbol):
     reachable_nonterminals_set = set() # (set) stores reachable nonterminals
     stack = [start_symbol] if start_symbol in grammar else [] # (stack) stores to be checked items, starts with start_symbol if it has a rule - [LIFO]
-    print(f" starting stack is: {stack}")
+    #print(f" starting stack is: {stack}")
     while stack: # until stack is empty
-        print(f"\n current reachable set is: {reachable_nonterminals_set}")
-        print(f" current stack to explore: {stack}")
+        #print(f"\n current reachable set is: {reachable_nonterminals_set}")
+        #print(f" current stack to explore: {stack}")
         current = stack.pop() # remove last added item, store it in current for computing.
-        print(f" current item: {current}")
+        #print(f" current item: {current}")
         if current in reachable_nonterminals_set: # if current nonterminal is already marked, skip
-            print(f"\t current already in set, skipping: {current}")
+            #print(f"\t current already in set, skipping: {current}")
             continue
-        print(f"\t current not in set, adding: {current}")
+        #print(f"\t current not in set, adding: {current}")
         reachable_nonterminals_set.add(current) # mark current nonterminal as reachable (adding it to the set)
-        print(f" trying for expansion(s) of {current}")
+        #print(f" trying for expansion(s) of {current}")
         if current in grammar.keys(): # if nonterminal has a rule (is in the left hand side)
-            print(f"\t expansion(s) for current item: {grammar.get(current)}")
+            #print(f"\t expansion(s) for current item: {grammar.get(current)}")
             for expansion in grammar.get(current): # iterate over each value for a given key
-                print(f" current expansion is: {expansion}")
+                #print(f" current expansion is: {expansion}")
                 for token in splitter(expansion): # iterate over each token for a given expansion
-                    print(f"\t current token is {token} | tokenized from {expansion}")
+                    #print(f"\t current token is {token} | tokenized from {expansion}")
                     if token in grammar.keys() and token not in reachable_nonterminals_set: # if token has a rule and is not marked yet, mark it
-                        print(f"\t\t marking token as reachable: {token}")
+                        #print(f"\t\t marking token as reachable: {token}")
                         stack.append(token)
-                    else: # print for debugging purposes
-                        print(f"\t\t skipping token, has no rule(s): {token}") if token not in grammar.keys() else print(f"\t\t skipping token, already marked: {token}")
-
+                    #else: # print for debugging purposes
+                        #print(f"\t\t skipping token, has no rule(s): {token}") if token not in grammar.keys() else print(f"\t\t skipping token, already marked: {token}")
     return reachable_nonterminals_set
 
 grammar, nonterminals = parse_rules("input.txt")
-splitter = make_splitter(nonterminals)
-print(f" output tokens: {splitter("SDFGxDHVX")}")
-print(f" productive set: {compute_productive_nonterminals(grammar,splitter)}")
-print(f" reachable set: {compute_reachable_nonterminals(grammar,splitter,"S")}")
+splitter = make_splitter(nonterminals) #prepare the splitter function
+#print(f" productive set: {compute_productive_nonterminals(grammar,splitter)}")
+#print(f" reachable set: {compute_reachable_nonterminals(grammar,splitter,"S")}")
+
+# take the intersection of productive and reachable nonterminals. if empty, then no paths to terminal strings exist.
+result = compute_productive_nonterminals(grammar,splitter) & compute_reachable_nonterminals(grammar,splitter,"S")
+print("YES" if result else "NO")
