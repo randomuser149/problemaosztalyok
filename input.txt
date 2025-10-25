@@ -1,4 +1,44 @@
-S -> ABcDE
-AB -> a
-DE -> dE | e
-E -> f
+S -> ENTRY | DEADLOOP | UNUSED
+ENTRY -> BLOCKA | BLOCKB | BLOCKC
+BLOCKA -> termA | BLOCKB termB | BLOCKC
+BLOCKB -> termC | BLOCKA termD | BLOCKD
+BLOCKC -> BLOCKE | termE
+BLOCKD -> termF | BLOCKE termG
+BLOCKE -> termH | BLOCKF
+BLOCKF -> termI | BLOCKG
+BLOCKG -> termJ | BLOCKH
+BLOCKH -> termK | BLOCKI
+BLOCKI -> termL | BLOCKJ
+BLOCKJ -> termM | BLOCKK
+BLOCKK -> termN | BLOCKL
+BLOCKL -> termO | BLOCKM
+BLOCKM -> termP | BLOCKN
+BLOCKN -> termQ | BLOCKO
+BLOCKO -> termR | BLOCKP
+BLOCKP -> termS | BLOCKQ
+BLOCKQ -> termT | BLOCKR
+BLOCKR -> termU | BLOCKS
+BLOCKS -> termV | BLOCKT
+BLOCKT -> termW | BLOCKU
+BLOCKU -> termX | BLOCKV
+BLOCKV -> termY | BLOCKW
+BLOCKW -> termZ
+WIDE -> opt1 | opt2 | opt3 | opt4 | opt5 | opt6 | opt7 | opt8 | opt9 | opt10
+ENTRY -> WIDE
+EPSILON ->
+ENTRY -> EPSILON
+DEADLOOP -> DEAD1
+DEAD1 -> DEAD2
+DEAD2 -> DEAD3
+DEAD3 -> DEAD1
+UNUSED -> ISLAND
+ISLAND -> x | y | z
+MIXED -> GOOD | BAD
+GOOD -> aGOODb | c
+BAD -> BADX
+BADX -> BADY
+BADY -> BAD
+LONGSYM01 -> LONGSYM02
+LONGSYM02 -> LONGSYM03
+LONGSYM03 -> longterm
+ENTRY -> LONGSYM01
