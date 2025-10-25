@@ -1,44 +1,94 @@
-S -> ENTRY | DEADLOOP | UNUSED
-ENTRY -> BLOCKA | BLOCKB | BLOCKC
-BLOCKA -> termA | BLOCKB termB | BLOCKC
-BLOCKB -> termC | BLOCKA termD | BLOCKD
-BLOCKC -> BLOCKE | termE
-BLOCKD -> termF | BLOCKE termG
-BLOCKE -> termH | BLOCKF
-BLOCKF -> termI | BLOCKG
-BLOCKG -> termJ | BLOCKH
-BLOCKH -> termK | BLOCKI
-BLOCKI -> termL | BLOCKJ
-BLOCKJ -> termM | BLOCKK
-BLOCKK -> termN | BLOCKL
-BLOCKL -> termO | BLOCKM
-BLOCKM -> termP | BLOCKN
-BLOCKN -> termQ | BLOCKO
-BLOCKO -> termR | BLOCKP
-BLOCKP -> termS | BLOCKQ
-BLOCKQ -> termT | BLOCKR
-BLOCKR -> termU | BLOCKS
-BLOCKS -> termV | BLOCKT
-BLOCKT -> termW | BLOCKU
-BLOCKU -> termX | BLOCKV
-BLOCKV -> termY | BLOCKW
-BLOCKW -> termZ
-WIDE -> opt1 | opt2 | opt3 | opt4 | opt5 | opt6 | opt7 | opt8 | opt9 | opt10
-ENTRY -> WIDE
-EPSILON ->
-ENTRY -> EPSILON
-DEADLOOP -> DEAD1
-DEAD1 -> DEAD2
-DEAD2 -> DEAD3
-DEAD3 -> DEAD1
-UNUSED -> ISLAND
-ISLAND -> x | y | z
-MIXED -> GOOD | BAD
-GOOD -> aGOODb | c
-BAD -> BADX
-BADX -> BADY
-BADY -> BAD
-LONGSYM01 -> LONGSYM02
-LONGSYM02 -> LONGSYM03
-LONGSYM03 -> longterm
-ENTRY -> LONGSYM01
+S -> A | B | C
+A -> aD | bE | cF
+B -> gG | hH | iI
+C -> jJ | kK | lL
+D -> A | B
+E -> F | G
+F -> H | I
+G -> J | K
+H -> L | M
+I -> N | O
+J -> pP | qQ
+K -> rR | sS
+L -> tT | uU
+M -> vV | wW
+N -> xX | yY
+O -> zZ | aA
+P -> B
+Q -> C
+R -> D
+S1 -> E
+T -> F
+U -> G
+V -> H
+W -> I
+X -> J
+Y -> K
+Z -> L
+AA -> M
+AB -> N
+AC -> O
+AD -> P
+AE -> Q
+AF -> R
+AG -> S1
+AH -> T
+AI -> U
+AJ -> V
+AK -> W
+AL -> X
+AM -> Y
+AN -> Z
+AO -> AA
+AP -> AB
+AQ -> AC
+AR -> AD
+AS -> AE
+AT -> AF
+AU -> AG
+AV -> AH
+AW -> AI
+AX -> AJ
+AY -> AK
+AZ -> AL
+BA -> AM
+BB -> AN
+BC -> AO
+BD -> AP
+BE -> AQ
+BF -> AR
+BG -> AS
+BH -> AT
+BI -> AU
+BJ -> AV
+BK -> AW
+BL -> AX
+BM -> AY
+BN -> AZ
+BO -> BA
+BP -> BB
+BQ -> BC
+BR -> BD
+BS -> BE
+BT -> BF
+BU -> BG
+BV -> BH
+BW -> BI
+BX -> BJ
+BY -> BK
+BZ -> BL
+CA -> BM
+CB -> BN
+CC -> BO
+CD -> BP
+CE -> BQ
+CF -> BR
+CG -> BS
+CH -> BT
+CI -> BU
+CJ -> BV
+CK -> BW
+CL -> BX
+CM -> BY
+CN -> BZ
+CO -> CA
