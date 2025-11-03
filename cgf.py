@@ -20,7 +20,7 @@ def parse_rules(filename):
                 grammar.setdefault(left_hand_side, []).append(rule) # append values to or create the new key + values
     return dict(grammar), nonterminals
 
-def derive_sequences(symbols, grammar, productive_nonterminals):
+def expand_and_merge(symbols, grammar, productive_nonterminals):
     print(f"NEW CALL with symbols: {symbols}")
     results = []
     print(f" current working symbols list is: {symbols}")
@@ -42,7 +42,7 @@ def derive_sequences(symbols, grammar, productive_nonterminals):
                 print(f" \t\t\tnew string is {new_symbols}")
                 print(f" \t\t\tmade out of {symbols[:index]} + {list(expansion)} + {symbols[index+1:]}")
                 # calls itself again to check whether the list with the new symbols can be "switched out" even more
-                results.extend(derive_sequences(new_symbols, grammar, productive_nonterminals)) # use list.extend to avoid nested lists 
+                results.extend(expand_and_merge(new_symbols, grammar, productive_nonterminals)) # use list.extend to avoid nested lists 
                 print(f"\nEND OF CALL with symbols {symbols}\n")
         else:
             print(f" \tsymbol is NOT in grammar lhs, skipping: {symbol}")
@@ -64,7 +64,7 @@ def derive_sequences(symbols, grammar, productive_nonterminals):
                     new_symbols = symbols[:index] + [merged] + symbols[index+size:]
                     print(f" \t\t\tnew symbols are {new_symbols}")
                     # calls itself again to check whether the list with the new symbols can be processed (merged) even more
-                    results.extend(derive_sequences(new_symbols, grammar, productive_nonterminals))
+                    results.extend(expand_and_merge(new_symbols, grammar, productive_nonterminals))
                 print(f" \t\tmerged string NOT found in grammar {merged}\n")
     return results
 
@@ -81,7 +81,7 @@ def compute_productive_nonterminals(grammar, splitter):
             for expansion in expansions: # for each expansion to given nonterminal
                 #print(f" current expansion is: {expansion} | full expansion list for nonterminal is {expansions}")
                 """NEEDS DEBUG PRINTS"""
-                symbols = derive_sequences(list(expansion), grammar, productive_nonterminals) # take current expansion, split into symbols, and explore what new substrings/merges it can produce
+                symbols = expand_and_merge(list(expansion), grammar, productive_nonterminals) # take current expansion, split into symbols, and explore what new substrings/merges it can produce
                 for symbol in symbols:  # for each symbol sublist of symbols
                     if all(token.islower() or token in productive for token in symbol): # if all tokens (items) of sublist are lowercase or productive nonterminals only
                         productive_nonterminals.add(nonterminal) # add to the set
@@ -108,6 +108,7 @@ def compute_reachable_nonterminals(grammar, splitter, start_symbol):
             #print(f"\t expansion(s) for current item: {grammar.get(current)}")
             for expansion in grammar.get(current): # iterate over each value for a given key
                 """THE PART BELOW IS BROKEN NEEDS FIXING"""
+                """
                 #print(f" current expansion is: {expansion}")
                 for token in splitter(expansion): # iterate over each token for a given expansion
                     #print(f"\t current token is {token} | tokenized from {expansion}")
@@ -116,13 +117,16 @@ def compute_reachable_nonterminals(grammar, splitter, start_symbol):
                         stack.append(token)
                     #else: # print for debugging purposes
                         #print(f"\t\t skipping token, has no rule(s): {token}") if token not in grammar.keys() else print(f"\t\t skipping token, already marked: {token}")
+                        """
     return reachable_nonterminals_set
 
 grammar, nonterminals = parse_rules("input.txt")
-splitter = make_splitter(nonterminals) #prepare the splitter function
+
+"""
 #print(f" productive set: {compute_productive_nonterminals(grammar,splitter)}")
 #print(f" reachable set: {compute_reachable_nonterminals(grammar,splitter,"S")}")
 
 # take the intersection of productive and reachable nonterminals. if empty, then no paths to terminal strings exist.
 result = compute_productive_nonterminals(grammar,splitter) & compute_reachable_nonterminals(grammar,splitter,"S")
+"""
 print("YES" if result else "NO")
