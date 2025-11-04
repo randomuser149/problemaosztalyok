@@ -44,8 +44,7 @@ def expand_and_merge(symbols, grammar, productive_nonterminals):
                 # calls itself again to check whether the list with the new symbols can be "switched out" even more
                 results.extend(expand_and_merge(new_symbols, grammar, productive_nonterminals)) # use list.extend to avoid nested lists 
                 print(f"\nEND OF CALL with symbols {symbols}\n")
-        else:
-            print(f" \tsymbol is NOT in grammar lhs, skipping: {symbol}")
+        else: print(f" \tsymbol is NOT in grammar lhs, skipping: {symbol}")
     print(f" returned result list of 'splitter': {results}\n")
 
     max_merge_size = 10  # expansions can be up to 10 characters
@@ -64,29 +63,36 @@ def expand_and_merge(symbols, grammar, productive_nonterminals):
                     new_symbols = symbols[:index] + [merged] + symbols[index+size:]
                     print(f" \t\t\tnew symbols are {new_symbols}")
                     # calls itself again to check whether the list with the new symbols can be processed (merged) even more
-                    results.extend(expand_and_merge(new_symbols, grammar, productive_nonterminals))
-                print(f" \t\tmerged string NOT found in grammar {merged}\n")
+                    new_results = derive_sequences(new_symbols, grammar, productive_nonterminals)
+                    print(f" \t\t\tEXTENDED results with {new_results}")
+                    results.extend(new_results)
+                else: print(f" \t\tmerged string NOT found in grammar {merged}\n")
+                print(f" \tfinished merging loop with symbol list {symbols}")
+            else: print(f" any (more) substring would be OOB: index+size {index+size} | len(symbols) {len(symbols)}")
     return results
 
-def compute_productive_nonterminals(grammar, splitter):
+def compute_productive_nonterminals(grammar):
     productive_nonterminals = set() # (set) stores productive nonterminals
     matched = True # tracks whether a productive nonterminal was found in that iteration, set to True ensures the while runs at least once
     while matched: # keep looping until no new productive nonterminals are discovered
         matched = False
         for nonterminal, expansions in grammar.items(): # unpacking each rule into nonterminal and its expansions (list), iterate over each nonterminal
-            #print(f"\n nonterminal is {nonterminal} | expansions are {expansions}")
+            print(f"\n [PROD DEF] nonterminal is {nonterminal} | expansions are {expansions}")
             if nonterminal in productive_nonterminals: # if already found, skip to next iteration
-                #print(f" nonterminal already in productive set {nonterminal}")
+                print(f" [PROD DEF] nonterminal already in productive set {nonterminal}")
                 continue
             for expansion in expansions: # for each expansion to given nonterminal
-                #print(f" current expansion is: {expansion} | full expansion list for nonterminal is {expansions}")
-                """NEEDS DEBUG PRINTS"""
-                symbols = expand_and_merge(list(expansion), grammar, productive_nonterminals) # take current expansion, split into symbols, and explore what new substrings/merges it can produce
+                print(f" [PROD DEF] current expansion is: {expansion} | full expansion list for nonterminal is {expansions}")
+                symbols = derive_sequences(list(expansion), grammar, productive_nonterminals)
+                print(f" [PROD DEF] current symbols for expansion {expansion}: {symbols}")
                 for symbol in symbols:  # for each symbol sublist of symbols
+                    print(f" [PROD DEF] \tcurrent symbol is: {symbol}")
                     if all(token.islower() or token in productive for token in symbol): # if all tokens (items) of sublist are lowercase or productive nonterminals only
+                        print(f" [PROD DEF] smybol marked as productive:  {symbol}")
                         productive_nonterminals.add(nonterminal) # add to the set
                         matched = True # ensures the loop runs once more
                         break # exits if one productive expansion is found
+                    else: print(f" [PROD DEF] \t\tsmybol NOT productive: {symbol}")
     return productive_nonterminals
 
 def compute_reachable_nonterminals(grammar, splitter, start_symbol):
@@ -107,8 +113,8 @@ def compute_reachable_nonterminals(grammar, splitter, start_symbol):
         if current in grammar.keys(): # if nonterminal has a rule (is in the left hand side)
             #print(f"\t expansion(s) for current item: {grammar.get(current)}")
             for expansion in grammar.get(current): # iterate over each value for a given key
-                """THE PART BELOW IS BROKEN NEEDS FIXING"""
-                """
+                """THE PART BELOW IS BROKEN NEEDS FIXING
+                
                 #print(f" current expansion is: {expansion}")
                 for token in splitter(expansion): # iterate over each token for a given expansion
                     #print(f"\t current token is {token} | tokenized from {expansion}")
@@ -122,11 +128,10 @@ def compute_reachable_nonterminals(grammar, splitter, start_symbol):
 
 grammar, nonterminals = parse_rules("input.txt")
 
-"""
-#print(f" productive set: {compute_productive_nonterminals(grammar,splitter)}")
-#print(f" reachable set: {compute_reachable_nonterminals(grammar,splitter,"S")}")
-
+productive = compute_productive_nonterminals(grammar)
+print(f"PRODUCTIVE SET: {productive}")
+reachable = compute_reachable_nonterminals(grammar, "S")
+print(f"REACHABLE SET: {reachable}")
 # take the intersection of productive and reachable nonterminals. if empty, then no paths to terminal strings exist.
-result = compute_productive_nonterminals(grammar,splitter) & compute_reachable_nonterminals(grammar,splitter,"S")
-"""
+result = productive & reachable
 print("YES" if result else "NO")
